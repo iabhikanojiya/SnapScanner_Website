@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -23,17 +23,29 @@ function StageIcon({ stage }: { stage: number }) {
 export default function Hero() {
   const [stage, setStage] = useState(0)
   const [scanY, setScanY] = useState(10)
+  const [isVisible, setIsVisible] = useState(false)
   const rafRef = useRef<number>()
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const prefersReducedMotion = useReducedMotion()
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 }
+    )
+    if (sectionRef.current) observer.observe(sectionRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
       setStage((s) => (s + 1) % stages.length)
-    }, 3000)
+    }, prefersReducedMotion ? 5000 : 3000)
     return () => clearInterval(interval)
-  }, [])
+  }, [prefersReducedMotion])
 
   useEffect(() => {
-    if (stage !== 0) {
+    if (stage !== 0 || !isVisible) {
       setScanY(10)
       return
     }
@@ -48,14 +60,14 @@ export default function Hero() {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [stage])
+  }, [stage, isVisible])
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden pt-20 sm:pt-24">
+    <section ref={sectionRef} className="relative min-h-[90vh] flex items-center overflow-hidden pt-20 sm:pt-24">
       <div className="absolute inset-0 bg-gradient-to-b from-red-50/40 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#E53935]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 -right-32 w-80 h-80 bg-[#ff6f61]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-[#E53935]/5 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#E53935]/5 rounded-full blur-2xl pointer-events-none hidden md:block" />
+      <div className="absolute top-1/3 -right-32 w-80 h-80 bg-[#ff6f61]/5 rounded-full blur-2xl pointer-events-none hidden md:block" />
+      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-[#E53935]/5 rounded-full blur-2xl pointer-events-none hidden md:block" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -130,7 +142,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-            className="relative flex items-center justify-center lg:justify-end"
+            className="relative flex items-center justify-center lg:justify-end will-change-transform"
           >
             <div className="relative w-[280px] h-[400px] sm:w-[320px] sm:h-[460px] lg:w-[360px] lg:h-[500px]">
               <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-br from-gray-900 to-gray-800 p-[3px] shadow-2xl shadow-black/20">
@@ -280,7 +292,7 @@ export default function Hero() {
               </div>
 
               <motion.div
-                animate={{ y: [0, -8, 0] }}
+                animate={prefersReducedMotion ? { y: 0 } : { y: [0, -8, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute -right-4 -bottom-4 sm:-right-6 sm:-bottom-6 bg-white rounded-2xl p-3 sm:p-4 shadow-xl border border-gray-100 z-10"
               >
@@ -291,7 +303,7 @@ export default function Hero() {
               </motion.div>
 
               <motion.div
-                animate={{ y: [0, 8, 0] }}
+                animate={prefersReducedMotion ? { y: 0 } : { y: [0, 8, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute -left-4 top-1/4 bg-white rounded-2xl p-3 sm:p-4 shadow-xl border border-gray-100 z-10 hidden sm:block"
               >

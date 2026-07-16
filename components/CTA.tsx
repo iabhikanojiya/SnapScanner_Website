@@ -15,9 +15,9 @@ export default function CTA() {
           transition={{ duration: 0.6 }}
           className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 to-gray-800 px-8 py-16 sm:px-16 sm:py-20 text-center"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#E53935]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none animate-pulse" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#ff6f61]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none animate-pulse" />
-          <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#E53935]/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none hidden md:block" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#ff6f61]/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2 pointer-events-none hidden md:block" />
+          <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none hidden md:block" />
 
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}

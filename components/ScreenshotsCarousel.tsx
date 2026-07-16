@@ -68,7 +68,7 @@ export default function ScreenshotsCarousel() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            className="relative w-[220px] h-[440px] sm:w-[260px] sm:h-[520px] lg:w-[280px] lg:h-[560px] flex-shrink-0 z-10"
+            className="relative w-[220px] h-[440px] sm:w-[260px] sm:h-[520px] lg:w-[280px] lg:h-[560px] flex-shrink-0 z-10 will-change-transform"
           >
             <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-br from-gray-900 to-gray-800 p-[3px] shadow-2xl shadow-black/20">
               <div className="w-full h-full rounded-[2.35rem] bg-white overflow-hidden relative">

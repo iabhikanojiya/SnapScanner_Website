@@ -60,6 +60,17 @@ html {
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+.will-change-transform {
+  will-change: transform;
+}
+
+@media (max-width: 768px) {
+  .glass, .glass-dark {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 .card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
