@@ -1,60 +1,67 @@
 import type { Config } from 'tailwindcss'
+import animate from 'tailwindcss-animate'
 
+// Design tokens. Brand red #E53935 is used for accents and icons; text and
+// filled buttons use the darker 600/700 steps so ordinary-size text meets
+// WCAG AA contrast (white on #E53935 is only 4.2:1).
 const config: Config = {
-  darkMode: ['class'],
-  content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-  ],
+  content: ['./components/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
   theme: {
-    container: {
-      center: true,
-      padding: '2rem',
-      screens: {
-        '2xl': '1400px',
-      },
+    screens: {
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
     },
     extend: {
       colors: {
         border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: '#E53935',
-          foreground: '#FFFFFF',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+        brand: {
+          50: '#FDF1F0',
+          100: '#FBE0DE',
+          200: '#F6BDB9',
+          DEFAULT: '#E53935',
+          500: '#E53935',
+          600: '#D32F2F', // filled buttons: white text 5.0:1
+          700: '#B92525', // red text: 6.3:1 on white, 5.6:1 on sand-100
+          800: '#8F1D1D',
         },
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+        coral: {
+          DEFAULT: '#FF6F61',
+          100: '#FFE7E4',
         },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+        ink: {
+          DEFAULT: '#111827',
+          soft: '#374151', // secondary text: 10.3:1 on white
+          muted: '#4B5563', // tertiary text: 7.6:1 on white, 6.9:1 on gray-100
         },
+      },
+      fontFamily: {
+        sans: ['var(--font-jakarta)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        display: ['clamp(2.25rem, 1.6rem + 2.8vw, 3.5rem)', { lineHeight: '1.06', letterSpacing: '-0.025em' }],
+        title: ['clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem)', { lineHeight: '1.12', letterSpacing: '-0.02em' }],
+      },
+      maxWidth: {
+        page: '76rem',
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      boxShadow: {
+        card: '0 1px 2px rgba(17, 24, 39, 0.04), 0 1px 1px rgba(17, 24, 39, 0.02)',
+        lift: '0 12px 32px -12px rgba(17, 24, 39, 0.18)',
+        panel: '0 1px 3px rgba(17, 24, 39, 0.06), 0 8px 24px -12px rgba(17, 24, 39, 0.12)',
       },
       keyframes: {
         'accordion-down': {
@@ -65,29 +72,14 @@ const config: Config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
-        'fade-in': {
-          from: { opacity: '0', transform: 'translateY(20px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
-        },
-        'fade-in-up': {
-          from: { opacity: '0', transform: 'translateY(40px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'fade-in': 'fade-in 0.6s ease-out',
-        'fade-in-up': 'fade-in-up 0.8s ease-out',
-        float: 'float 3s ease-in-out infinite',
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [animate],
 }
 
 export default config

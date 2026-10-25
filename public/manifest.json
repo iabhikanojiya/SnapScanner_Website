@@ -1,21 +1,17 @@
 {
   "name": "Snap Scanner",
-  "short_name": "SnapScanner",
-  "description": "Scan documents, convert images to PDF & edit PDFs",
+  "short_name": "Snap Scanner",
+  "description": "Free PDF tools and resume builder in your browser, plus the Android app",
   "start_url": "/",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#ffffff",
   "theme_color": "#E53935",
   "icons": [
     {
-      "src": "/favicon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/favicon.png",
+      "src": "/logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

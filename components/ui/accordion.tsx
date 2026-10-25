@@ -7,50 +7,47 @@ import { cn } from '@/lib/utils'
 
 const Accordion = AccordionPrimitive.Root
 
-const AccordionItem = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
->(({ className, ...props }, ref) => (
-  <AccordionPrimitive.Item
-    ref={ref}
-    className={cn('border-b border-gray-100', className)}
-    {...props}
-  />
-))
-AccordionItem.displayName = 'AccordionItem'
+function AccordionItem({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Item>) {
+  return <AccordionPrimitive.Item className={cn('border-b border-gray-200 last:border-b-0', className)} {...props} />
+}
 
-const AccordionTrigger = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Header className="flex">
-    <AccordionPrimitive.Trigger
-      ref={ref}
-      className={cn(
-        'flex flex-1 items-center justify-between py-5 text-left text-base font-medium transition-all hover:text-[#E53935] [&[data-state=open]>svg]:rotate-180',
-        className
-      )}
+function AccordionTrigger({
+  className,
+  children,
+  headingLevel = 3,
+  ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger> & { headingLevel?: 2 | 3 | 4 }) {
+  const Heading = `h${headingLevel}` as const
+  return (
+    <AccordionPrimitive.Header asChild>
+      <Heading className="flex">
+        <AccordionPrimitive.Trigger
+          className={cn(
+            'flex flex-1 items-center justify-between gap-4 rounded-lg py-5 text-left text-base font-semibold text-ink transition-colors hover:text-brand-700 focus-visible:ring-offset-0 [&[data-state=open]>svg]:rotate-180',
+            className
+          )}
+          {...props}
+        >
+          {children}
+          <ChevronDown aria-hidden className="h-5 w-5 shrink-0 text-ink-muted transition-transform duration-200" />
+        </AccordionPrimitive.Trigger>
+      </Heading>
+    </AccordionPrimitive.Header>
+  )
+}
+
+// Always mounted (hidden while closed) so the answers are in the server-rendered
+// HTML for search engines, and find-in-page can reach them.
+function AccordionContent({ className, children, ...props }: React.ComponentProps<typeof AccordionPrimitive.Content>) {
+  return (
+    <AccordionPrimitive.Content
+      forceMount
+      className="overflow-hidden data-[state=closed]:hidden data-[state=open]:animate-accordion-down"
       {...props}
     >
-      {children}
-      <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-300" />
-    </AccordionPrimitive.Trigger>
-  </AccordionPrimitive.Header>
-))
-AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName
-
-const AccordionContent = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Content
-    ref={ref}
-    className="overflow-hidden text-sm text-muted-foreground transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
-    {...props}
-  >
-    <div className={cn('pb-5 pt-0', className)}>{children}</div>
-  </AccordionPrimitive.Content>
-))
-AccordionContent.displayName = AccordionPrimitive.Content.displayName
+      <div className={cn('pb-5 pr-9 leading-relaxed text-ink-soft', className)}>{children}</div>
+    </AccordionPrimitive.Content>
+  )
+}
 
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }

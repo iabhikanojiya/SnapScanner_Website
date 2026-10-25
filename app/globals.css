@@ -5,125 +5,240 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --foreground: 221 39% 11%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 34%;
+    --border: 220 13% 91%;
+    --ring: 0 66% 50%;
     --radius: 0.75rem;
+    /* Header: a 3.5rem black tab attached to the top of the screen. */
+    --header-height: 3.5rem;
   }
-}
 
-@layer base {
+  html {
+    /* Keeps anchored sections clear of the sticky header. */
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-white text-foreground antialiased;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    @apply bg-white font-sans text-ink antialiased;
+  }
+
+  ::selection {
+    @apply bg-brand-600 text-white;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-white;
+  }
+
+  [hidden] {
+    display: none !important;
   }
 }
 
-::selection {
-  background-color: #E53935;
-  color: white;
-}
+@layer components {
+  .page-container {
+    @apply mx-auto w-full max-w-page px-4 sm:px-6 lg:px-8;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  .section {
+    @apply py-16 sm:py-20;
+  }
 
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
+  .eyebrow {
+    @apply text-sm font-semibold uppercase tracking-[0.08em] text-brand-700;
+  }
 
-.glass-dark {
-  background: rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
+  .heading-display {
+    @apply text-display font-extrabold text-ink;
+  }
 
-.will-change-transform {
-  will-change: transform;
-}
+  .heading-section {
+    @apply text-title font-bold text-ink;
+  }
 
-@media (max-width: 768px) {
-  .glass, .glass-dark {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+  .lead {
+    @apply text-lg leading-relaxed text-ink-soft;
+  }
+
+  .card {
+    @apply rounded-2xl border border-gray-200 bg-white shadow-card;
+  }
+
+  .card-link {
+    @apply card transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-lift;
+  }
+
+  .icon-tile {
+    @apply inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700;
+  }
+
+  .text-link {
+    @apply font-semibold text-brand-700 underline decoration-brand-200 decoration-2 underline-offset-4 transition-colors hover:decoration-brand-700;
+  }
+
+  .skip-link {
+    @apply fixed left-4 top-3 z-[100] -translate-y-20 rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white transition-transform focus:translate-y-0;
+  }
+
+  /* Form controls used across the tools, the library and the resume editor. */
+  .field-label {
+    @apply block text-sm font-semibold text-ink;
+  }
+
+  .field {
+    @apply mt-1.5 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[0.95rem] text-ink placeholder:text-gray-500 transition-colors hover:border-gray-400 focus-visible:border-brand-600 focus-visible:ring-1 focus-visible:ring-offset-0 disabled:bg-gray-100;
+  }
+
+  .field-hint {
+    @apply mt-1 text-xs text-ink-muted;
+  }
+
+  /* Segmented choice built from radio inputs: <label class="choice"><input class="sr-only" type="radio">…</label> */
+  .choice {
+    @apply inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-gray-300 bg-white px-3 text-sm font-semibold text-ink-soft transition-colors hover:border-gray-400 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:checked]:text-brand-800 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-600 has-[:focus-visible]:ring-offset-2;
+  }
+
+  .panel {
+    @apply rounded-2xl border border-gray-200 bg-white;
+  }
+
+  /* Checkerboard behind transparent images and PDF pages while they load. */
+  .canvas-backdrop {
+    background-color: #f3f4f6;
+    background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+      linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+      linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+    background-size: 16px 16px;
+    background-position:
+      0 0,
+      0 8px,
+      8px -8px,
+      -8px 0;
+  }
+
+  /* Long-form text (privacy policy). */
+  .prose-policy h2 {
+    @apply mt-12 scroll-mt-24 text-2xl font-bold text-ink;
+  }
+  .prose-policy h3 {
+    @apply mt-8 text-lg font-semibold text-ink;
+  }
+  .prose-policy p {
+    @apply mt-4 leading-relaxed text-ink-soft;
+  }
+  .prose-policy ul {
+    @apply mt-4 list-disc space-y-2 pl-6 text-ink-soft marker:text-brand;
+  }
+  .prose-policy a {
+    @apply text-link;
   }
 }
 
-.card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* pdf.js text layer: transparent text positioned over the page canvas so it
+   can be selected and searched. The essentials of pdf.js's viewer CSS. The
+   page wrapper sets --total-scale-factor to the viewport scale. */
+.pdf-page {
+  --user-unit: 1;
+  --scale-round-x: 1px;
+  --scale-round-y: 1px;
 }
-
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-}
-
-.text-gradient {
-  background: linear-gradient(135deg, #E53935 0%, #ff6f61 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.gradient-border {
-  position: relative;
-}
-
-.gradient-border::before {
-  content: '';
+.textLayer {
   position: absolute;
+  text-align: initial;
   inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, #E53935, #ff6f61);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  overflow: clip;
+  opacity: 1;
+  line-height: 1;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  caret-color: CanvasText;
+  z-index: 2;
+  --min-font-size: 1;
+  --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+  --min-font-size-inv: calc(1 / var(--min-font-size));
+}
+.textLayer[data-main-rotation='90'] {
+  transform: rotate(90deg) translateY(-100%);
+}
+.textLayer[data-main-rotation='180'] {
+  transform: rotate(180deg) translate(-100%, -100%);
+}
+.textLayer[data-main-rotation='270'] {
+  transform: rotate(270deg) translateX(-100%);
+}
+.textLayer :is(span, br) {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+  user-select: text;
+}
+.textLayer > :not(.markedContent),
+.textLayer .markedContent span:not(.markedContent) {
+  z-index: 1;
+  --font-height: 0;
+  font-size: calc(var(--text-scale-factor) * var(--font-height));
+  --scale-x: 1;
+  --rotate: 0deg;
+  transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+}
+.textLayer .markedContent {
+  display: contents;
+}
+.textLayer ::selection {
+  background: rgba(37, 99, 235, 0.3);
+  color: transparent;
+}
+.textLayer br::selection {
+  background: transparent;
+}
+.textLayer .endOfContent {
+  display: block;
+  position: absolute;
+  inset: 100% 0 0;
+  z-index: 0;
+  cursor: default;
+  user-select: none;
+}
+.textLayer.selecting .endOfContent {
+  top: 0;
+}
+.no-text-select .textLayer :is(span, br) {
+  user-select: none;
+  cursor: inherit;
 }
 
-.animate-in {
-  animation: fade-in-up 0.6s ease-out forwards;
-  opacity: 0;
+@media (prefers-reduced-motion: no-preference) {
+  .enter {
+    animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 }
 
-@keyframes fade-in-up {
+@keyframes rise {
   from {
-    opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(10px);
   }
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
-
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -132,6 +247,256 @@ html {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
+}
+
+/* Resume printing: only the resume sheet is printed, at full A4 size. */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  body.printing-resume * {
+    visibility: hidden;
+  }
+  body.printing-resume .resume-print-root,
+  body.printing-resume .resume-print-root * {
+    visibility: visible;
+  }
+  /* Static host so the sheet is positioned against the page, not clipped by
+     the scrolling preview panel. */
+  body.printing-resume .resume-print-host {
+    position: static !important;
+    /* Paper is narrower than the desktop breakpoint, where the preview pane
+       may be hidden behind the Edit tab. */
+    display: block !important;
+  }
+  body.printing-resume .resume-print-root {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  body.printing-resume .resume-page-gap {
+    display: none !important;
+  }
+  body.printing-resume .resume-sheet {
+    break-inside: auto;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* Create Studio printing: only the design pages are printed, at the design's
+   own paper size (set by the editor with an @page rule while printing). */
+.create-print-root {
+  display: none;
+}
+@media print {
+  body.printing-create * {
+    visibility: hidden;
+  }
+  body.printing-create .create-print-root,
+  body.printing-create .create-print-root * {
+    visibility: visible;
+  }
+  body.printing-create .create-print-root {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  body.printing-create .create-print-page {
+    overflow: hidden;
+    break-after: page;
+  }
+  body.printing-create .create-print-page:last-child {
+    break-after: auto;
+  }
+}
+
+/* Homepage download CTA: gradient with a pink glow and gently floating
+   decorations. Motion is removed for people who prefer reduced motion. */
+.cta-gradient {
+  background:
+    radial-gradient(ellipse 45% 38% at 50% 0%, rgba(231, 138, 207, 0.55), transparent 72%),
+    radial-gradient(ellipse 75% 85% at 50% 45%, #7551e8 0%, #3436d9 48%, #2421a8 100%);
+}
+.cta-float {
+  rotate: var(--r, 0deg);
+  animation: cta-float var(--d, 7s) ease-in-out infinite;
+}
+.cta-pulse {
+  animation: cta-pulse var(--d, 4s) ease-in-out infinite;
+}
+.cta-drift {
+  animation: cta-drift var(--d, 6s) ease-in-out infinite;
+}
+@keyframes cta-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(4deg);
+  }
+}
+@keyframes cta-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+@keyframes cta-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(6px, -8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-float,
+  .cta-pulse,
+  .cta-drift {
+    animation: none;
+  }
+}
+
+/* Header tab: concave curves where the tab meets the top edge of the screen,
+   so it looks attached to the screen rather than floating. */
+.header-tab::before,
+.header-tab::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+.header-tab::before {
+  left: -18px;
+  background: radial-gradient(circle at 0 100%, transparent 17.5px, #050505 18px);
+}
+.header-tab::after {
+  right: -18px;
+  background: radial-gradient(circle at 100% 100%, transparent 17.5px, #050505 18px);
+}
+
+/* The header strip beside the tab is transparent. The first block of each
+   page slides up behind it, and a transparent top border of the same height
+   keeps its content below the tab while its background fills the strip.
+   (Editor pages start with a visually hidden h1, so the next block is used,
+   skipping a <template> React may insert while the editor loads.) */
+main > :first-child:not(.sr-only),
+main > .sr-only:first-child + :not(template),
+main > .sr-only:first-child + template + * {
+  margin-top: calc(-1 * var(--header-height));
+  border-top: var(--header-height) solid transparent;
+  background-origin: border-box;
+}
+
+/* "Download our app" popup: the dialog itself grows out of and back into the
+   Download app button (animated in Header.tsx); the backdrop fades here. */
+@media (prefers-reduced-motion: no-preference) {
+  dialog.app-dialog[open]::backdrop {
+    animation: app-backdrop-in 300ms ease-out;
+  }
+  dialog.app-dialog.is-closing::backdrop {
+    animation: app-backdrop-out 260ms ease-in forwards;
+  }
+}
+@keyframes app-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes app-backdrop-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Snap Assistant page: dark gradient hero with drifting glows, a floating chat
+   card, gradient avatar/send button and messages that slide in. */
+.assistant-hero {
+  background:
+    radial-gradient(ellipse 60% 70% at 50% 0%, rgba(124, 58, 237, 0.45), transparent 70%),
+    linear-gradient(160deg, #0b0b1e 0%, #1e1b4b 55%, #312e81 100%);
+}
+.assistant-hero-accent {
+  background: linear-gradient(90deg, #a5b4fc, #f0abfc 50%, #67e8f9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.assistant-glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  animation: assistant-drift 16s ease-in-out infinite;
+}
+.assistant-card {
+  box-shadow:
+    0 40px 90px -40px rgba(30, 20, 90, 0.55),
+    0 8px 24px -12px rgba(30, 20, 90, 0.2);
+}
+.assistant-avatar,
+.assistant-send {
+  background: linear-gradient(135deg, #4f46e5, #9333ea 60%, #db2777);
+}
+.assistant-send:not(:disabled):hover {
+  filter: brightness(1.1);
+}
+.assistant-user-bubble {
+  background: linear-gradient(135deg, #4338ca, #7c3aed);
+}
+.assistant-log {
+  background: linear-gradient(180deg, #ffffff 0%, #f7f7fd 100%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .assistant-msg {
+    animation: assistant-msg-in 260ms ease-out both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .assistant-glow {
+    animation: none;
+  }
+}
+@keyframes assistant-msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes assistant-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, -20px) scale(1.08);
+  }
+}
+
+/* Dark home page bands between the light sections. */
+.band-ember {
+  background:
+    radial-gradient(ellipse 55% 60% at 15% 30%, rgba(229, 57, 53, 0.22), transparent 70%),
+    linear-gradient(160deg, #111014 0%, #1c1517 55%, #241418 100%);
+}
+.band-midnight {
+  background:
+    radial-gradient(ellipse 60% 70% at 85% 0%, rgba(124, 58, 237, 0.3), transparent 70%),
+    linear-gradient(165deg, #070b18 0%, #0f172a 60%, #131a35 100%);
 }

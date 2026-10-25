@@ -1,0 +1,86 @@
+import { expect, test } from '@playwright/test'
+import { FIXTURES, clickDownload, pageCount } from './fixtures'
+
+test.describe('Snap Assistant', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/files')
+    await page.locator('input[type=file]').first().setInputFiles([FIXTURES.path('alpha.pdf'), FIXTURES.path('bravo.pdf'), FIXTURES.photo])
+    await expect(page.getByTestId('file-row')).toHaveCount(3)
+  })
+
+  test('finds files and merges "these two documents" in the Merge tool', async ({ page }) => {
+    await page.goto('/assistant')
+    const input = page.getByLabel('Ask Snap Assistant')
+    await input.fill('Find my PDF files')
+    await input.press('Enter')
+    const reply = page.getByTestId('assistant-message').last()
+    await expect(reply).toContainText('I found 2 PDFs')
+    await expect(reply).toContainText('alpha.pdf')
+    await input.fill('Merge these two documents')
+    await input.press('Enter')
+    await page.getByTestId('assistant-message').last().getByRole('button', { name: /Open Merge PDF/ }).click()
+    await expect(page).toHaveURL(/\/tools\/merge-pdf\?files=/)
+    await expect(page.getByText('2 files · 5 pages')).toBeVisible()
+    await page.getByRole('button', { name: /Merge 2 PDFs/ }).click()
+    const { bytes } = await clickDownload(page)
+    expect(await pageCount(bytes)).toBe(5)
+  })
+
+  test('asks which PDF to compress, then opens it', async ({ page }) => {
+    await page.goto('/assistant')
+    await page.getByRole('button', { name: 'Compress this file' }).click()
+    const reply = page.getByTestId('assistant-message').last()
+    await expect(reply).toContainText('Which PDF do you want to compress?')
+    await reply.getByLabel('bravo.pdf').check()
+    await reply.getByRole('button', { name: /Continue with 1 file/ }).click()
+    await expect(page).toHaveURL(/\/tools\/compress-pdf\?files=/)
+    await expect(page.getByTestId('file-name')).toHaveText('bravo.pdf')
+  })
+
+  test('shows recent files, explains unsupported requests and creates a resume', async ({ page }) => {
+    await page.goto('/assistant')
+    const input = page.getByLabel('Ask Snap Assistant')
+    await input.fill('Show my recent files')
+    await input.press('Enter')
+    await expect(page.getByTestId('assistant-message').last()).toContainText('I found 3 recent files')
+    await input.fill('convert this to excel')
+    await input.press('Enter')
+    await expect(page.getByTestId('assistant-message').last()).toContainText('Excel or PowerPoint')
+    await input.fill('Create a resume')
+    await input.press('Enter')
+    await page.getByRole('button', { name: 'Create resume now' }).click()
+    await expect(page).toHaveURL(/\/resume-builder\/edit\?id=/)
+    await expect(page.getByTestId('resume-sheet')).toBeVisible()
+  })
+})
+
+test('the Assistant page starts with prompt cards and can start a new chat', async ({ page }) => {
+  await page.goto('/assistant')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Ask for a file or a tool.')
+  const starters = page.getByTestId('assistant-starters')
+  await expect(starters.getByRole('button')).toHaveCount(6)
+  // The chip row is hidden until the conversation starts, so each prompt appears once.
+  await expect(page.getByRole('button', { name: 'Find my recent PDFs' })).toHaveCount(1)
+  await starters.getByRole('button', { name: 'Find my recent PDFs' }).click()
+  await expect(page.getByTestId('user-message')).toHaveText('Find my recent PDFs')
+  await expect(page.getByTestId('assistant-starters')).toHaveCount(0)
+  await expect(page.getByLabel('Suggestions').getByRole('button')).toHaveCount(6)
+  await page.getByRole('button', { name: 'New chat' }).click()
+  await expect(page.getByTestId('user-message')).toHaveCount(0)
+  await expect(page.getByTestId('assistant-starters')).toBeVisible()
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+  expect(overflow).toBeLessThanOrEqual(1)
+})
+
+test('the home page assistant section uses the new design and works', async ({ page }) => {
+  await page.goto('/')
+  const section = page.locator('section[aria-labelledby=assistant]')
+  await expect(section.getByRole('heading', { level: 2 })).toHaveText('Just say what you need')
+  await expect(section.getByRole('link', { name: /Open Snap Assistant/ })).toHaveAttribute('href', '/assistant')
+  const starters = section.getByTestId('assistant-starters')
+  await expect(starters.getByRole('button')).toHaveCount(4)
+  await starters.getByRole('button', { name: 'Merge these documents' }).click()
+  await expect(section.getByTestId('user-message')).toHaveText('Merge these documents')
+  await expect(section.getByTestId('assistant-message').last()).toBeVisible()
+  await expect(section.getByLabel('Ask Snap Assistant')).toHaveAttribute('id', 'assistant-input-home')
+})
