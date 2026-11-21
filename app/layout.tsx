@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import JsonLd from '@/components/JsonLd'
 import { APP_NAME, DEVELOPER_NAME, PLAY_STORE_URL, SITE_URL, SUPPORT_EMAIL } from '@/lib/site'
+import { Analytics } from '@vercel/analytics/next'
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <JsonLd data={organization} />
         <JsonLd data={website} />
+        <Analytics />
       </body>
     </html>
   )
